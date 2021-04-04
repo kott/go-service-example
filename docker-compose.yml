@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  go-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - database
+    ports:
+      - "8080:8080"
+    environment:
+      - SERVICES_PROFILE=docker
+    env_file:
+      - ./local_docker.env
+    networks:
+      - service-network
+
+  database:
+    container_name: example-database
+    image: postgres:10-alpine
+    environment:
+      POSTGRES_USER: "gouser"
+      POSTGRES_DB: "example"
+      POSTGRES_HOST_AUTH_METHOD: "trust"
+    ports:
+      - 5432:5432
+    networks:
+      - service-network
+    volumes:
+      - volume-postgres:/var/lib/postgresql/data
+      - ./pkg/db/init/000_create_extension.sql:/docker-entrypoint-initdb.d/000_create_extension.sql
+
+networks:
+  service-network:
+    driver: "bridge"
+
+volumes:
+  volume-postgres: {}

@@ -1,0 +1,2 @@
+CREATE EXTENSION "uuid-ossp";
+CREATE EXTENSION pg_trgm;
