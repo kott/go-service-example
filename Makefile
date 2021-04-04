@@ -2,6 +2,7 @@ PROJECT_NAME := $(shell basename "$(PWD)")
 PKG := "github.com/kott/$(PROJECT_NAME)"
 PKG_LIST := $(shell go list ./...)
 GO_FILES := $(shell find . -name '*.go' | grep -v _test.go)
+BUILD_DIR := "bin"
 
 .PHONY: all dep build clean test coverage coverage-report lint fmt
 
@@ -32,10 +33,10 @@ dep: ## Get the dependencies
 	@go get -v -d ./...
 
 build: dep ## Build the binary file
-	@go build -o $(PROJECT_NAME) -v ./cmd/api/
+	@go build -o $(BUILD_DIR)/$(PROJECT_NAME) -v ./cmd/api/
 
 clean: ## Remove previous build
-	@rm -f $(PROJECT_NAME)
+	@rm -f $(BUILD_DIR)/*
 
 help: ## Display this help screen
 	@grep -h -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
